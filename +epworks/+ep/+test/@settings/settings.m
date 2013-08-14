@@ -25,7 +25,7 @@ classdef settings < epworks.id_object
         ManufacturingTest
         Name
         OChans
-        Stims
+        Stims %
         %TODO: Consider breaking stims up by type ...
         %'Auditory'    'Electrical'    'External'    'TceMEP'    'Visual'
         %

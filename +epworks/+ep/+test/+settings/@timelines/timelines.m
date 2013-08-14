@@ -5,7 +5,7 @@ classdef timelines < epworks.id_object
     
     
     properties
-        ID
+        ID = uint64([0 0])
         IsEnabled
         IsPaused
         IsRunning

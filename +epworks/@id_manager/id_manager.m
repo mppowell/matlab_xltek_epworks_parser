@@ -26,10 +26,30 @@ classdef id_manager < handle
         
         self_id_is_referenced_in_other_prop %This can be used for reverse linking
         
-        d2 = '----   Props with IDs Info  ----'
+        redundant_id_name_pairs = {}
         
-        id_properties
-        object_references
+        d2 = '----   Props with IDs Info  ----'
+        %These variables are of the form:
+        %
+        %   my_object.SomeID = id_value
+        %   my_object.some_id_resolved = object_of_id
+        %   
+        %
+        %   Where:
+        %   prop_id__all_objs  = my_object
+        %   prop_id__new_props = 'some_id_resolved'
+        %   prop_id__id_values = id_value
+        %
+        %   NOTE: We really don't care about 'SomeID' as we have
+        %   the value it holds and we are going to assign the actual
+        %   resolved object to a different name.
+        %
+        %   The object_of_id will come from matching the id_value to 
+        %   the self_id_values above.
+        
+        prop_id__all_objs
+        prop_id__new_props
+        prop_id__id_values
     end
     
     methods
@@ -68,11 +88,9 @@ classdef id_manager < handle
             objs_by_type(cellfun('isempty',objs_by_type)) = [];
             %--------------------------------------------------------------
             
-            
-            
-            
             %Now, for each of these objects, get their ID
             %It is possible that some of these values will be [0 0]
+            %epworks.id_object.getSelfID
             ids_by_type = cellfun(@getSelfID,objs_by_type,'un',0);
             
             %NOTE: objs_by_type is a cell array, where each entry contains
@@ -85,6 +103,32 @@ classdef id_manager < handle
             obj.self_id_values = vertcat(ids_by_type{:});
             temp = cellfun(@num2cell,objs_by_type,'un',0);
             obj.self_id_obj_references = vertcat(temp{:});
+            
+            %This happened once ...
+            if size(obj.self_id_values,1) ~= length(obj.self_id_obj_references)
+               error('ID manager code error, differences in self_id prop lengths, fix me!') 
+            end
+            
+            %Redundant IDs
+            %--------------------------------------------------------------
+            %self_ids should be unique, but they are not. This can cause
+            %problems when 
+            
+            sid = obj.self_id_values;
+            [~,loc] = ismember(sid,sid,'rows');
+            
+            not_first = loc' ~= 1:length(loc);
+            
+            %Ignore [0 0] entries, ideally we would rewrite the code
+            %so that we could get rid of them ...
+            not_first(ismember(sid,uint64([0 0]),'rows')) = false;
+            
+            sid_objs = obj.self_id_obj_references;
+            
+            redundant_class_list = [sid_objs(loc(not_first)) sid_objs(not_first)];
+            redundant_class_list_names = cellfun(@class,redundant_class_list,'un',0);
+            
+            obj.redundant_id_name_pairs = epworks.RNEL.uniqueRowsCA(redundant_class_list_names);
             
             [matched_ids,...
                 matched_id_obj_with_prop,...
@@ -126,15 +170,20 @@ function [matched_ids,...
 %    couldn't see the ID that the number had replaced.
 %
 %---------------------------------------------------------------------
+%Calls method: ep_works.id_object.getPropLinkInfo
 prop_link_info_by_type = cellfun(@getPropLinkInfo,objs_by_type,'un',0);
 %epworks.prop_link_info
 
 %Merge, no need to keep object specific anymore
-prop_link_info_by_type = [prop_link_info_by_type{:}];
+all_prop_link_info_objects = [prop_link_info_by_type{:}];
 
-prop_id__all_objs  = vertcat(prop_link_info_by_type.obj_refs);
-prop_id__new_props = vertcat(prop_link_info_by_type.new_prop_names);
-prop_id__id_values = vertcat(prop_link_info_by_type.prop_ID_values);
+prop_id__all_objs  = vertcat(all_prop_link_info_objects.obj_refs);
+prop_id__new_props = vertcat(all_prop_link_info_objects.new_prop_names);
+prop_id__id_values = vertcat(all_prop_link_info_objects.prop_ID_values);
+
+obj.prop_id__all_objs  = prop_id__all_objs;
+obj.prop_id__new_props = prop_id__new_props;
+obj.prop_id__id_values = prop_id__id_values;
 
 %Match property ID values to the list of IDs that is 1:1 with
 %the objects.
@@ -218,7 +267,7 @@ mid_matrix = [...
 
 %This 'temp' line is for my own info
 %What are the unique combination of assignments observed ...
-%temp = epworks.RNEL.uniqueRowsCA(mid_matrix(:,1:3);
+%temp = epworks.RNEL.uniqueRowsCA(mid_matrix(:,1:3));
 
 %NOTE: I need the objects as well, not just the names ...
 [u_entries,~,J] = epworks.RNEL.uniqueRowsCA(mid_matrix);

@@ -27,8 +27,6 @@ classdef ep_triggered_waveform < epworks.type
     %         trace_obj_id: [1x1 epworks.type.ep_trace]
     %        matlab_parent: [1x1 epworks.main]
     
-    
-    
     properties (Dependent)
         name             %Retrieved from trace object
         timestamp_date

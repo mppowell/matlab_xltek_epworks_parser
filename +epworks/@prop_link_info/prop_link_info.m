@@ -7,6 +7,7 @@ classdef prop_link_info
     %   epworks.id_object
     
     properties
+       type
        obj_refs       %{n x 1}
        old_prop_names %{n x 1}
        new_prop_names %{n x 1}
@@ -25,11 +26,13 @@ classdef prop_link_info
                new_props = new_props';
            end
            
+           obj.type = class(handle_objs);
+           
            %column vector
            %old_props - row
            %new-props - row
            
-           n_objs = length(handle_objs);
+           n_objs  = length(handle_objs);
            n_props = length(old_props);
            
            temp_1 = repmat(num2cell(handle_objs),1,n_props);
@@ -41,7 +44,13 @@ classdef prop_link_info
                error('Property of class:"%s" is empty, need to initialize to null',class(handle_objs))
            end
            
-           obj.obj_refs = temp_1(:);
+           n_total = n_objs*n_props;
+           
+           if numel(temp_1) ~= n_total
+              error('Some properties were dropped') 
+           end
+           
+           obj.obj_refs       = temp_1(:);
            obj.old_prop_names = temp_2(:);
            obj.new_prop_names = temp_3(:);
            obj.prop_ID_values = vertcat(temp_4{:});

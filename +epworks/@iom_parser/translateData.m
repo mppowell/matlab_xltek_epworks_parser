@@ -41,6 +41,10 @@ r = obj.raw_objects;
 %              children: [1x7 epworks.raw_object]
 %      children_indices: [1349 1350 1351 1352 1353 1354 1355]
 
+%See the data object model for help with names:
+%CSV file in:
+%
+
 %C - constants ...
 %---------------------------------------------------------
 C.TYPE_0_COLORS = {
@@ -54,9 +58,10 @@ C.TYPE_0_HIGH_U16 = {
     'EPStudy.Data.ProductVersionHigh'
 };
 
-% TYPE_0_OTHERS = {
-%     'EPGroup.Data.DisplayMode'      %[8 0 1 0] ????
-% }
+C.TYPE_0_OTHERS = {
+    'EPGroup.Data.DisplayMode'      %[8 0 1 0] ????
+    'EPTest.Data.Settings.GroupDef.000.DisplayMode'
+};
 
 %I think this is a single ..., only values observed are NaN which makes a
 %lot more sense than 2147483647
@@ -256,6 +261,9 @@ conv_data = F.typeMat(temp_data,'int32',false);
 conv_data_cell = num2cell(double(conv_data)); %NOTE: We'll lose some
 %memory but Matlab and non-doubles are not friends ...
 
+needs_fixin = ismember(type_0_full_names,C.TYPE_0_OTHERS);
+conv_data_cell(needs_fixin) = F.rows(double(F.typeMat(temp_data(needs_fixin,:),'uint16',false)));
+
 needs_fixin = ismember(type_0_full_names,C.TYPE_0_HIGH_U16);
 conv_data_cell(needs_fixin) = num2cell(double(F.typeMat(temp_data(needs_fixin,3:4),'uint16',false)));
 
@@ -295,7 +303,9 @@ needs_fixin = ismember(type_1_full_names,C.TYPE_1_TIMESTAMPS);
 conv_data(needs_fixin) = F.time1(conv_data(needs_fixin));
 
 conv_data_cell = num2cell(conv_data);
-conv_data_cell(needs_fixin) = arrayfun(@datestr,conv_data(needs_fixin),'un',0);
+
+%We'll leave these as timestamps now for sorting ...
+%conv_data_cell(needs_fixin) = arrayfun(@datestr,conv_data(needs_fixin),'un',0);
 
 r.data_value(mask) = conv_data_cell;
 
@@ -372,7 +382,7 @@ temp_data = vertcat(all_type_3_data{mask_len});
 uint64_data = F.typeMat(temp_data,'uint64',false);
 
 %arrayfun(@datestr,conv_data(needs_fixin),'un',0);
-conv_data_cell(mask_len) = arrayfun(@datestr,F.time2(uint64_data),'un',0);
+conv_data_cell(mask_len) = F.rows(F.time2(uint64_data));
 
 %I've only seen 1 value with length 2
 %EPTest.Data.Settings.ConfigData.{57CF9D5C-AC2F-11D3-A8CC-00105AA89390}ShowSplitGains'

@@ -11,7 +11,7 @@ classdef stims < epworks.id_object
         Colour
         ConstVoltage
         ContraMode
-        Delay
+        Delay        %Shows up on the groups panel as "Stim Delay"
         DeviceType
         Divisions
         ID

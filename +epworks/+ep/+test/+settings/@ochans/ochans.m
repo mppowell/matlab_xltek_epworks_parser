@@ -28,6 +28,7 @@ classdef ochans < epworks.id_object
         group
         to
         d2 = '----  Reverse Pointers  ----'
+        %See ID_assignments.csv
         traces
         rec_file
         cursor_defs
@@ -36,7 +37,7 @@ classdef ochans < epworks.id_object
         ID_PROP_INFO_1 = {
             'From'       'from'
             'GroupDef'   'group'
-            'To'    'to'
+            'To'         'to'
             }
     end
     methods

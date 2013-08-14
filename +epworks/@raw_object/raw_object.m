@@ -169,7 +169,6 @@ classdef raw_object < handle
             %
             %   epworks.iom_raw_object.getTSTrawObjects
             %
-            MAX_NUMBER_OBJECTS = 100000;
             START_BYTE       = 82; %point to first value after:
             %5 a a a a
             %
@@ -177,11 +176,11 @@ classdef raw_object < handle
             %
             %5 is proceeded by a bunch of nulls
             
-            all_data_objects = cell(1,MAX_NUMBER_OBJECTS);
             cur_obj_index    = 0;
             
+            roa = epworks.raw_object_array;
             
-            roh = epworks.raw_object_helper(raw_data,all_data_objects,cur_obj_index);
+            roh = epworks.raw_object_helper(raw_data,roa,cur_obj_index);
             
             %Yikes, this is a bit of a hack ...
             roh.depth = 0;

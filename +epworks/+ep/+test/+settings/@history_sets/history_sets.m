@@ -2,11 +2,17 @@ classdef history_sets < epworks.id_object
     %
     %   Class:
     %   epworks.ep.test.settings.history_sets
+    %
+    %NOTE: Due to the way the code is currently written, if there are no
+    %children of an object, then the object is not initialized. 
+    %   
+    %   See Also:
+    %   epworks.main.populateIOMObjects
     
     properties
        HistoryTraceIDs
-       ID
-       Name
+       ID   = uint64([0 0])
+       Name = ''
     end
     properties (Constant,Hidden)
         ID_PROP_INFO_1 = {}
@@ -16,8 +22,8 @@ classdef history_sets < epworks.id_object
            
            %child_objs = all_raw(raw_obj.children_indices);
            prop_names = roa.name(children_indices);
-           obj.ID   = roa.data_value{strcmp(prop_names,'ID')};
-           obj.Name = roa.data_value{strcmp(prop_names,'Name')};
+           obj.ID     = roa.data_value{children_indices(strcmp(prop_names,'ID'))};
+           obj.Name   = roa.data_value{children_indices(strcmp(prop_names,'Name'))};
            %TODO: We should check that the history traces have IDs of 1:n
            %or rather 0:n-1
            %

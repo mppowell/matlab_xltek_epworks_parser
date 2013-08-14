@@ -9,7 +9,7 @@ classdef cursor_calc < epworks.id_object
        AreaType
        DisplayType
        FromDef = uint64([0 0])
-       ID
+       ID = uint64([0 0])
        IsMarker
        Name
        NegAlarmLevel

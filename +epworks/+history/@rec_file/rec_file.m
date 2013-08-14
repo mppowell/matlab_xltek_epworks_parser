@@ -26,10 +26,7 @@ classdef rec_file < epworks.id_object
         file_timestamp  %matlab time converted to seconds
         file_timestamp_string %datestr of time
         trace_ID 
-        ochan_ID %NOTE: Apparently sometimes this points to a ichan ID
-        %
-        %   TODO: Not sure how to know which this points to
-        %
+        ochan_ID
         default_length %Length of each section of data
         
         waveforms %[1 x n], epworks.history.rec_waveform

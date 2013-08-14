@@ -6,7 +6,7 @@ classdef cursor_def < epworks.id_object
     properties
         DisplayName
         GroupDef = uint64([0 0])
-        ID
+        ID = uint64([0 0])
         IsMarker
         LatencyFrom
         LatencyTo

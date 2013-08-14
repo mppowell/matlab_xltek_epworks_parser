@@ -2,6 +2,12 @@ classdef group_def < epworks.id_object
     %
     %   Class:
     %   epworks.ep.test.settings.group_def
+    %
+    %   NOTE: This shares a lot of properties with the group. I've been
+    %   placing more info in the groups objects for now.
+    %
+    %   See Also:
+    %   epworks.ep.group
     
     properties
         CaptureChime
@@ -26,7 +32,7 @@ classdef group_def < epworks.id_object
         RollingWindow
         ShowLiveTriggered
         SignalType
-        SpecialType
+        SpecialType  %Not sure what this is
         StartOnTestActivation
         SweepsPerAvg
         TimelineID
@@ -37,6 +43,13 @@ classdef group_def < epworks.id_object
         timeline
         trigger_source
     end
+    
+    properties
+       d4 = '----  Computed Values  -----'
+       array_index = NaN %Set when sorting
+    end
+    
+    
     properties (Constant,Hidden)
         ID_PROP_INFO_1 = {
             'MaacsGroupId'      'maacs_group'

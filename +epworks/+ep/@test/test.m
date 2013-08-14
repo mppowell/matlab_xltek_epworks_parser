@@ -4,10 +4,28 @@ classdef test < epworks.ep
     %   epworks.ep.test
     
     properties
+       Name 
+    end
+    
+    methods
+        function value = get.Name(obj)
+           value = obj.Settings.Name; 
+        end
+    end
+    
+    %Enumerated raw values  -----------------------------------------------
+    properties (Hidden)
+        State %Enumeration
+        %0 - Active
+        %1 - Inactive 
+    end
+    
+    properties
+        d0 = '----   Data Properties  ----'
         CreationTime
         Settings
         SimulationMode
-        State
+
         StimboxConnected
         TestSetObjCount
         VersionInfo
@@ -16,12 +34,32 @@ classdef test < epworks.ep
         d2 = '----  Reverse Pointers  ----'
         groups
         traces
+        d3 = '----  Enumerated Values ----'
     end
+    
+    properties (Dependent)
+        state
+    end
+    
+    methods
+        function value = get.state(obj)
+           STATE_VALUES   = {'Active' 'Inactive'};
+           value = STATE_VALUES{obj.State+1};
+        end
+    end
+    
+    properties
+       d4 = '----  Computed Values  -----'
+       test_number = NaN %Set when sorting
+    end
+    
     properties (Constant,Hidden)
         ID_PROP_INFO_1 = {
             'Parent'      'parent'
         }
+        ENUMERATED_PROPS = {'State'}
     end
+    
     methods
         function sub_id_objects_by_type = getSubIDObjects(objs)
             %

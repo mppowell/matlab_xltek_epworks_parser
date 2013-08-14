@@ -8,7 +8,8 @@ classdef triggered_waveform < epworks.ep
        AppliedHWFilterHFF
        AppliedHWFilterLFF
        AudioVolume
-       Baseline %logical?
+       Baseline  %logical? Not sure if this indicates using one of if
+       %it would indicate being one
        Clone = uint64([0 0]);
        Color
        HffCutoff
@@ -22,8 +23,8 @@ classdef triggered_waveform < epworks.ep
        NotchCutoff
        OriginalDecim
        OriginalSampFreq
-       Range
-       RawSweepNum
+       Range    %(Units: uV)
+       RawSweepNum  %Not always present
        Resolution
        RightDisplayGain
        SampFreq
@@ -35,24 +36,32 @@ classdef triggered_waveform < epworks.ep
        Timebase
        Timestamp
        TraceObjId
-       TriggerDelay
-       UISettings
-       Visible
-       WasBaseline
+       TriggerDelay %(Units: ms)
+       UISettings   %Not always present
+       Visible      %Not always present 
+       WasBaseline  %Not always present
        d1 = '----  Pointers to Other Objects  ----'
        clone
        set
        trace
        parent
+       d2 = '----   Reverse Pointers  ----'
+       cursors
+       d3 = '----  Dependent Values  ----'
     end
     
-    properties (Dependent)
+    properties (Dependent)  
        data 
     end
     
     methods
         function value = get.data(obj)
-           value = obj.SourceData.data;
+            sd = obj.SourceData;
+            if ~isempty(sd)
+                value = obj.SourceData.data;
+            else
+                value = [];
+            end
         end
     end
     

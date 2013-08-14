@@ -8,6 +8,9 @@ classdef rec_waveform < epworks.id_object
        m_parent %Points to: epworks.rec_file
        
        ID
+       %    Some of these have identical IDs with triggered_waveform objects.
+       %    Not all of them do however.
+       
        timestamp
        timestamp_string
        
@@ -44,6 +47,8 @@ classdef rec_waveform < epworks.id_object
        %    3) seems to always be intmax('uint32')
        
        data
+       d2 = '----  Links  -----'
+       triggered_waveform %Might not always be valid ...
     end
     properties (Constant,Hidden)
         ID_PROP_INFO_1 = {}
