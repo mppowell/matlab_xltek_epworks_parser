@@ -4,9 +4,9 @@ This code attempts to parse data collected using XLTek's EPWorks software. It is
 
 ## Documentation ##
 
-[Questions](documentation/questions.md)
-[Parsing Strategy](documentation/parsing_strategy.md)
-[What's Missing](documentation/whats_missing.md)
+- [Questions](documentation/questions.md)
+- [Parsing Strategy](documentation/parsing_strategy.md)
+- [What's Missing](documentation/whats_missing.md)
 
 ## Usage ##
 
