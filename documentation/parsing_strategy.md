@@ -1,5 +1,7 @@
 # Parsing Strategy #
 
+**UNFINISHED**
+
 The main parsing file is epworks.main. Currently the .IOM file is parsed fairly thoroughly. Some information is filtered out as it is translated from raw objects to the objects shown in epworks.main. For the most part it is GUI settings that are not translated (although they could be).
 
 ## epworks.iom_parser.translateData ##

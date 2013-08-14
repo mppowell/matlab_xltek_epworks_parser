@@ -1,17 +1,29 @@
 # XLTek EPWorks Parser #
 
-This code attempts to parse .iom files collected using XLTek's EPWorks software. It is implemented using Matlab. The parsing is done without any official documentation or specifications given to me by the company and as such any parsing should be checked against known results using their software. 
+This code attempts to parse data collected using XLTek's EPWorks software. It is implemented using Matlab. The parsing is done without any official documentation or specifications given to me by the company and as such any parsing should be checked against known results using their software. 
 
 ## Documentation ##
 
-[questions]('documentation/questions.md')
+[Questions](documentation/questions.md)
+[Parsing Strategy](documentation/parsing_strategy.md)
+[What's Missing](documentation/whats_missing.md)
 
 ## Usage ##
 
-Currently only a subset of the their data is parsed out and put into Matlab classes. The current parent class is epworks.study . Initialization requires the following:
+1. Make sure the epworks package is on the Matlab path. The subfolders should not be added to the path.
 
-1) Making sure the epworks package is on the Matlab path
-2) Creation of an options.txt file in the same directory that contains the package (not in the package directory), that currently only has one required value (line entry):
+The main entry call is *epworks.main*.
+
+The simplest usage case is to call:
+
+    r = epworks.main;
+
+This will allow the user to select a study to parse.
+
+Alternatively, it is possible to create a file which tells the code where a bunch of studies are located. Instructions on how to do this are below.
+
+
+2) *(Optional)* Creation of an options.txt file in the same directory that contains the package (not in the package directory), that currently only has one required value (line entry):
 
 	study_parent_folder = [insert path here]
 
@@ -19,13 +31,14 @@ Example:
 	
 	study_parent_folder = C:\emg_tests\
 
-The study object can be obtained by specifying the name of the study (folder name) as an input to the study constructor.
+The result object can then be obtained by specifying the name of the study (folder name) as an input to the main constructor.
 
-	s = epworks.study('my_emg_1_study')
+	r = epworks.main('my_emg_1_study')
 
-Future Updates
+## Future Updates ##
 
 1. I need to document the parsing process.
-2. Stimulation grouping of triggered waveforms needs to be implemented to allow for easier averaging
-3. Incorportation of Excel notes on study configurations for easier data analysis. 
+2. Some objects have only a certain subset of their properties valid depending on type. Currently this means that the user sees a lot of extra properties that they really don't need to see.
+3. Some of the links are not yet resolved.
+4. A couple of files are not parsed.
 

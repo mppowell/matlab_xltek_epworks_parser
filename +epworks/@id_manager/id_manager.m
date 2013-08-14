@@ -64,7 +64,12 @@ classdef id_manager < handle
                 objs_by_type = [objs_by_type; {rec_files'}; {rec_waveforms'}];
             end
             
+            %Note, this occurs, for example, when we have no cursor objects
             objs_by_type(cellfun('isempty',objs_by_type)) = [];
+            %--------------------------------------------------------------
+            
+            
+            
             
             %Now, for each of these objects, get their ID
             %It is possible that some of these values will be [0 0]
