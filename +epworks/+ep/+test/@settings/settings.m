@@ -3,6 +3,14 @@ classdef settings < epworks.id_object
     %   Class:
     %   epworks.ep.test.settings
     
+    %   NOTE: The settings links are currently populated by a method in
+    %   test. Eventually this should be moved here for better
+    %   encapsulation.
+    %
+    properties (Hidden)
+       Stims 
+    end
+    
     properties
         ActiveLayout
         BoardRevision
@@ -25,14 +33,16 @@ classdef settings < epworks.id_object
         ManufacturingTest
         Name
         OChans
-        Stims %
-        %TODO: Consider breaking stims up by type ...
-        %'Auditory'    'Electrical'    'External'    'TceMEP'    'Visual'
-        %
-        %    It might be best to have a constructor which switches
-        %    based on some property
-        %
+       
         
+        %????? - where are these linked at????
+        %See test class
+        auditory_stims
+        electrical_stims
+        external_stims
+        tcemep_stims
+        visual_stims
+
         TestTips
         Timelines
         TrendSets
@@ -45,6 +55,27 @@ classdef settings < epworks.id_object
             }
     end
     methods
+        function fixStimsObjects(objs)
+           %
+           %    From object population Stims is a cell array
+           %    of different stim object subclasses. Here we break them
+           %    up by type and assign them to the correct properties.
+           
+           n_objs = length(objs);
+           for iObj = 1:n_objs
+               cur_obj = objs(iObj);
+               
+               stim_cell = cur_obj.Stims;
+               
+               types = cellfun(@(x) x.Type,stim_cell,'un',0);
+               
+               cur_obj.auditory_stims   = [stim_cell{strcmp(types,'Auditory')}];
+               cur_obj.electrical_stims = [stim_cell{strcmp(types,'Electrical')}];
+               cur_obj.external_stims   = [stim_cell{strcmp(types,'External')}];
+               cur_obj.tcemep_stims     = [stim_cell{strcmp(types,'TceMEP')}];
+               cur_obj.visual_stims     = [stim_cell{strcmp(types,'Visual')}];
+           end
+        end
     end
     
 end

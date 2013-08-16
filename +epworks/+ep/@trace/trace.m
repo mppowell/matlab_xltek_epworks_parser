@@ -2,22 +2,29 @@ classdef trace < epworks.ep
     %
     %   Class:
     %   ep.epworks.trace
+    %
+    %   Trace is the definition of a waveform (result).
+    
+    properties (Hidden)
+       ActiveWaveformObjId
+       GroupObjId
+       OChanId
+       TestObjId
+    end
     
     properties
-        d0 = '----  Data Properties  ----'
-        ActiveWaveformObjId
-        CreateTime
-        GroupObjId
         Name
-        OChanId
-        OriginX
-        OriginY
-        RawSweepsMode
-        RejectionOriginator
-        STLiveNumAccepted
+        GroupName
+        d0 = '----  Data Properties  ----'
+        
+        CreateTime    %(Units: Matlab Time)
+        RawSweepsMode %?????
+        RejectionOriginator  
+        STLiveNumAccepted   
         STLiveTimestamp
         State
-        TestObjId
+        %   See group enumeration ...
+        
         d1 = '----  Pointers to Other Objects  ----'
         active_waveform
         group
@@ -28,6 +35,15 @@ classdef trace < epworks.ep
         freerun_waveform
         triggered_waveforms
         rec_file
+        d3 = '----  Display Properties  ----'
+        OriginX
+        OriginY
+    end
+    
+    methods
+        function value = get.GroupName(obj)
+           value = obj.group.Name;
+        end
     end
     
     properties (Constant,Hidden)

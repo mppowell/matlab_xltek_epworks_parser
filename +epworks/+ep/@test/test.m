@@ -77,7 +77,11 @@ classdef test < epworks.ep
                 'HistorySets'
                 'IChans'
                 'OChans'
-                'Stims'
+                'auditory_stims'
+                'electrical_stims'
+                'external_stims'
+                'tcemep_stims'
+                'visual_stims'
                 'Timelines'
                 'TrendSets'
                 };

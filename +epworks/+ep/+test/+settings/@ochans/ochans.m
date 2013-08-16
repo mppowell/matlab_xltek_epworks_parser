@@ -2,12 +2,17 @@ classdef ochans < epworks.id_object
     %
     %   Class:
     %   epworks.ep.test.settings.ochans
+    %
+    %   ?? what is an ochan vs a ichan???
+    
+    properties (Hidden)
+       From
+       GroupDef
+       To
+    end
     
     properties
-        Color
         FilteringStyle
-        From
-        GroupDef
         HffCutoff
         ID
         IsChannelEnabled
@@ -22,7 +27,7 @@ classdef ochans < epworks.id_object
         ResponseChime
         RightDisplayGain
         Timebase
-        To
+        
         d1 = '----  Pointers to Other Objects  ----'
         from
         group
@@ -32,6 +37,8 @@ classdef ochans < epworks.id_object
         traces
         rec_file
         cursor_defs
+        d3 = '----  Display Properties  -----'
+        Color
     end
     properties (Constant,Hidden)
         ID_PROP_INFO_1 = {

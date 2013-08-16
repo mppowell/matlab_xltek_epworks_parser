@@ -22,6 +22,8 @@ classdef iom_data_model
        new_object_fh   %{n x 1} function handles
        is_new_object   %[n x 1] 
        custom_init     %[n x 1] The object should implement .initialize()
+       custom_fh       %{n x 1}
+       %use_custom_fh   %[n x 1]
        %This was added for :
        %    epworks.ep.test.settings.history_sets
     end
@@ -51,6 +53,7 @@ classdef iom_data_model
            o_dont_import = output(2:end,3);
            o_class_name  = output(2:end,4);
            o_custom_init = output(2:end,5);
+           o_custom_fh   = output(2:end,6);
            
            obj.full_names = o_orig_name;
            
@@ -74,6 +77,16 @@ classdef iom_data_model
            obj.new_object_fh(obj.is_new_object)   = cellfun(@str2func,obj.new_object_name(obj.is_new_object),'un',0);
         
            obj.custom_init = ~cellfun('isempty',o_custom_init);
+           
+           obj.custom_fh             = cell(length(obj.new_object_name),1);
+           mask = ~cellfun('isempty',o_custom_fh);
+           %obj.use_custom_fh = mask;
+           obj.custom_fh(mask)   = cellfun(@str2func,o_custom_fh(mask),'un',0);
+           
+           %Update new objects so we are sure
+           %to use custom constructors as well
+           obj.is_new_object = obj.is_new_object | mask;
+           
         end
     end
     

@@ -2,28 +2,40 @@ classdef ichans < epworks.id_object
     %
     %   Class:
     %   epworks.ep.test.settings.ichans
+    %
+    %   This seems to be the specification for a recording channel.
+    %   The channel consists of a active and reference electrodes.
+    %   
+    
+    properties (Hidden)
+       ActiveElectrode
+       ID
+       MontageChanId
+       RefElectrode
+    end
     
     properties
         d0 = '----   Data Properties  ----' 
-        ActiveElectrode
+        
         AudioVolume
         EventThreshold
         HardwareLFF
-        ID
+        
         IsSquelch
         LogicalChan
-        MontageChanId
+        
         OldLogChan
-        Range
-        RefElectrode
+        Range %(Units: uV), adjust the sensitivity of the amplifier
+        
         Resolution
         SamplingFreq
         SquelchThreshold
-        ThresholdDelay
+        ThresholdDelay %The delay before the processor begins to use
+        %the reject threshold to reject data
         d1 = '----  Pointers to Other Objects  ----'
-        active_electrode
+        active_electrode %epworks.ep.test.settings.electrodes
         montage_chan
-        ref_electrode
+        ref_electrode    %epworks.ep.test.settings.electrodes
     end
     
     properties (Constant,Hidden)

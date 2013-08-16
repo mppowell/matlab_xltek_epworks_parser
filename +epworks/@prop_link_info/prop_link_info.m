@@ -5,6 +5,10 @@ classdef prop_link_info
     %
     %   See Also:
     %   epworks.id_object
+    %
+    %   This is a temporary object which provides information on
+    %   which properties in an object contain ID values that should
+    %   be replaced with objects.
     
     properties
        type

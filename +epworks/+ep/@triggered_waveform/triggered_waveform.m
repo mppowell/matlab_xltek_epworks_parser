@@ -3,41 +3,56 @@ classdef triggered_waveform < epworks.ep
     %   Class:
     %   epworks.ep.triggered_waveform
     
+    properties (Hidden)
+       Clone = uint64([0 0]); 
+       SetObjId
+       TraceObjId
+    end
+    
     properties
        d0 = '----  Data Properties  ----' 
+       
+       df1 = '----  Filtering Properties  -----'
        AppliedHWFilterHFF
        AppliedHWFilterLFF
-       AudioVolume
+       HffCutoff
+       LffCutoff
+       NotchCutoff
+       
+       
+       
        Baseline  %logical? Not sure if this indicates using one of if
        %it would indicate being one
-       Clone = uint64([0 0]);
-       Color
-       HffCutoff
-       IOMLocalObject %logical?
-       IsAlarmedWave
-       IsCaptured
-       IsRejectedData
-       LeftDisplayGain
-       LffCutoff
+       
+       
+       
+       IOMLocalObject   %logical?
+       IsAlarmedWave    %Indicates stimulator saturation?
+       IsCaptured       %not always set
+       IsRejectedData   %not always set, each channel gets to
+       %have a rejection threshold specified
+       
+       
        MeClone %logical?
-       NotchCutoff
+       
        OriginalDecim
        OriginalSampFreq
-       Range    %(Units: uV)
+       Range        %(Units: uV)
        RawSweepNum  %Not always present
-       Resolution
-       RightDisplayGain
+       Resolution   %normally 16 -> bits?
+       
        SampFreq
-       SavedStimIntensity
-       SequenceNumber
-       SetObjId
-       SmoothSel
-       SourceData
-       Timebase
-       Timestamp
-       TraceObjId
+       SavedStimIntensity %(Units: uA or V?), how to tell
+       SequenceNumber %Only observed 1
+       
+       SmoothSel    %Not always present
+       SourceData   %This is a structure, populated in:
+       %epworks.iom_parser.translateData
+       %
+       Timebase     %(Units: ms/div)
+       Timestamp    %(Units: Matlab Time)
        TriggerDelay %(Units: ms)
-       UISettings   %Not always present
+       
        Visible      %Not always present 
        WasBaseline  %Not always present
        d1 = '----  Pointers to Other Objects  ----'
@@ -45,9 +60,18 @@ classdef triggered_waveform < epworks.ep
        set
        trace
        parent
+       rec_file_waveform %This is populated by
        d2 = '----   Reverse Pointers  ----'
        cursors
-       d3 = '----  Dependent Values  ----'
+       
+       d3 = '----  Display Properties  -----'
+       AudioVolume
+       Color
+       LeftDisplayGain
+       RightDisplayGain
+       UISettings   %Not always present
+       
+       d4 = '----  Dependent Values  ----'
     end
     
     properties (Dependent)  

@@ -11,8 +11,13 @@ classdef timelines < epworks.id_object
         IsRunning
         IsWaiting
         RestartDelay
+        %- Never
+        %- Continuous
+        %- On Interval
         StartWaiting
-        Type
+        Type %Enumerated Value?
+        %0 - Interleaved
+        %1 - Consecutive
     end
     properties (Constant,Hidden)
         ID_PROP_INFO_1 = {}

@@ -17,3 +17,5 @@ stimulate at that intensity without needing to change the amplitude in GUI.
 In other words, this is not a stimulus bias, but a default setting for the GUI.
 
 4. Why are the .iom and .rec traces for triggered stimuli different? The .rec file looks like it might be a filtered version of the .iom version.
+
+5. The stimulus protocol and data capture is very confusing to me. How does one know if a stimulus is actually delivered? For example, most files contain visual and auditory stimuli info even though none were used.

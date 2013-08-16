@@ -57,6 +57,10 @@ classdef main < epworks.RNEL.handle_light
             
             obj.populateIOMObjects(parsed_iom_data);
             
+            %Hack, fixes stim objects in settings ...
+            settings_objects = [obj.tests.Settings];
+            settings_objects.fixStimsObjects();
+            
             %rec files
             %---------------------------------------------------------------
             all_rec_files  = [file_manager.rec_file_paths{:}];
@@ -91,15 +95,18 @@ classdef main < epworks.RNEL.handle_light
             %the exception of the history file, although I don't know if
             %that does any good ...
             if ~isempty(obj.rec_files)
-                r = obj.rec_files;
-                w = [r.waveforms];
+                r     = obj.rec_files;
+                w     = [r.waveforms];
                 wids  = vertcat(w.ID);
                 tw    = obj.triggered_waveforms;
                 twids = vertcat(tw.ID);
                 [mask,loc] = ismember(wids,twids,'rows');
                 if any(mask)
-                    matching_tw = num2cell(tw(loc(mask)));
-                    [w(mask).triggered_waveform] = deal(matching_tw{:});
+                    matching_tw      = tw(loc(mask));
+                    matching_tw_cell = num2cell(matching_tw);
+                    [w(mask).triggered_waveform] = deal(matching_tw_cell{:});
+                    w_cell = num2cell(w(mask));
+                    [matching_tw(mask).rec_file_waveform] = deal(w_cell{:}); %#ok<NASGU>
                 end
             end
             

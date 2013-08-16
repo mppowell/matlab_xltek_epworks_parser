@@ -1,7 +1,7 @@
-Classes that change,Types,PropertiesInfluencingType
-epworks.ep.test.settings.stims,Auditory,Type
-,Electrical,
-,External,
-,TceMEP,
-,Visual,
-epworks.ep.set,,IOMLocalObject
+Classes that change,Types,PropertiesInfluencingType,Status
+epworks.ep.test.settings.stims,Auditory,Type,Done
+,Electrical,,
+,External,,
+,TceMEP,,
+,Visual,,
+epworks.ep.set,,IOMLocalObject,Not Done

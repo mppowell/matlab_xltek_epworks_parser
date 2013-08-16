@@ -1,0 +1,44 @@
+All,Auditory,Visual,External,TceMEP,Electrical
+    '2ndPulseIntensity',,,,,    '2ndPulseIntensity'
+    'AudStimOutput',    'AudStimOutput',,,,
+    'AudioOnset',    'AudioOnset',,,,
+    'AudioRamp',    'AudioRamp',,,,
+    'Colour',,    'Colour',,,
+    'ConstVoltage',,,,    'ConstVoltage',    'ConstVoltage'
+    'ContraMode',    'ContraMode',,,,
+    'Delay',    'Delay',    'Delay',    'Delay',    'Delay',    'Delay'
+    'DeviceType',,,,,    'DeviceType'
+    'Divisions',,    'Divisions',,,
+    'ID',    'ID',    'ID',    'ID',    'ID',    'ID'
+    'InitIntensity',,,,,    'InitIntensity'
+    'Intensity',,,,,    'Intensity'
+    'InterPulseDuration',,,    'InterPulseDuration',,    'InterPulseDuration'
+    'IpsiMode',    'IpsiMode',,,,
+    'IsActiveHigh',,,    'IsActiveHigh',,
+    'IsOutput',,,    'IsOutput',,
+    'Location',,,    'Location',,
+    'MaskIntensity',    'MaskIntensity',,,,
+    'Mode',,    'Mode',    'Mode',    'Mode',    'Mode'
+    'Nerve',,    'Nerve',    'Nerve',,    'Nerve'
+    'NumberOfPhases',,,,,    'NumberOfPhases'
+    'OnTimeline',    'OnTimeline',,,,
+    'PhysName',    'PhysName',    'PhysName',    'PhysName',    'PhysName',    'PhysName'
+    'PhysNum',    'PhysNum',    'PhysNum',    'PhysNum',    'PhysNum',    'PhysNum'
+    'Polarity',,,,    'Polarity',    'Polarity'
+    'PrimingGap',,,,    'PrimingGap',
+    'PrimingPulses',,,,    'PrimingPulses',
+    'PulseDuration',    'PulseDuration',,,    'PulseDuration',    'PulseDuration'
+    'PulseIntensity',    'PulseIntensity',,,    'PulseIntensity',    'PulseIntensity'
+    'PulsesPerTrain',,,    'PulsesPerTrain',    'PulsesPerTrain',    'PulsesPerTrain'
+    'Range',,,,    'Range',Range
+    'Rate',    'Rate',    'Rate',    'Rate',    'Rate',Rate
+    'RelayPort',,,,    'RelayPort',
+    'RelaySwitchDelay',,,,,    'RelaySwitchDelay'
+    'SwStimId',    'SwStimId',    'SwStimId',    'SwStimId',    'SwStimId',    'SwStimId'
+    'TrainRate',,,    'TrainRate',,    'TrainRate'
+    'TriggerToStimLat',    'TriggerToStimLat',    'TriggerToStimLat',    'TriggerToStimLat',    'TriggerToStimLat',    'TriggerToStimLat'
+    'Type',    'Type',    'Type',    'Type',    'Type',    'Type'
+    'VisualField',,    'VisualField',,,
+    'VisualFlash',,    'VisualFlash',,,
+    'VisualStimOutput',,    'VisualStimOutput',,,
+    'VisualTrigger',,    'VisualTrigger',,,

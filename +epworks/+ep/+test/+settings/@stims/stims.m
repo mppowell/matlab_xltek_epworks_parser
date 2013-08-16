@@ -3,57 +3,92 @@ classdef stims < epworks.id_object
     %   Class:
     %   epworks.ep.test.settings.stims
     
+    properties (Hidden)
+       Delay 
+    end
+    
     properties
-        second_pulse_intensity
-        AudStimOutput
-        AudioOnset
-        AudioRamp
-        Colour
-        ConstVoltage
-        ContraMode
-        Delay        %Shows up on the groups panel as "Stim Delay"
-        DeviceType
-        Divisions
+        d5 = '-----  Properties for all stim types  -----'
+        stim_delay %Delay from main sync pulse
         ID
-        InitIntensity
-        Intensity
-        InterPulseDuration
-        IpsiMode
-        IsActiveHigh
-        IsOutput
-        Location
-        MaskIntensity
-        Mode
-        Nerve
-        NumberOfPhases
-        OnTimeline
         PhysName
         PhysNum
-        Polarity
-        PrimingGap
-        PrimingPulses
-        PulseDuration
-        PulseIntensity
-        PulsesPerTrain
-        Range
-        Rate
-        RelayPort
-        RelaySwitchDelay
+        Rate %
+        %for electrical: (Units: Hz)
+        %
         SwStimId
-        TrainRate
         TriggerToStimLat
         Type
-        VisualField
-        VisualFlash
-        VisualStimOutput
-        VisualTrigger
     end
     
     properties (Constant,Hidden)
         ID_PROP_INFO_1 = {}
     end
     
-    methods
+    methods (Static)
+        function objs = initializeStimObjects(roa,array_indices)
+            %
+            %
+            %   objs = epworks.ep.test.settings.stims.initializeStimObjects(all_objects,children_indices)
+            
+            %At this point our children indices point to array elements
+            %For each of these, we need to get the children, find the type
+            %element, and then assign based on that element
+            
+            n_array = length(array_indices);
+            objs = cell(1,n_array);
+            
+            for iArray = 1:n_array
+               cur_array_index  = array_indices(iArray); 
+               children_indices = roa.children_indices{cur_array_index};
+               child_names = roa.name(children_indices);
+              
+               %Hack, look away :/
+               %This should really be specified in the csv file
+               child_names(strcmp(child_names,'2ndPulseIntensity')) = {'second_pulse_intensity'};
+               
+               
+               child_data  = roa.data_value(children_indices);
+               I = find(strcmp(child_names,'Type'),1);
+               type_value = child_data{I};
+               switch type_value
+                   case 'Auditory'
+                       temp_obj = epworks.ep.test.settings.stims.auditory;
+                   case 'Visual'
+                       temp_obj = epworks.ep.test.settings.stims.visual;
+                   case 'External'
+                       temp_obj = epworks.ep.test.settings.stims.external;
+                   case 'TceMEP'
+                       temp_obj = epworks.ep.test.settings.stims.tcemep;
+                   case 'Electrical'
+                       temp_obj = epworks.ep.test.settings.stims.electrical;
+                   otherwise
+                       error('Unrecognized stimulus type')
+               end
+               
+               for iChild = 1:length(children_indices)
+                  cur_child_prop = child_names{iChild};
+                  data_value = child_data{iChild};
+                  if ~isempty(data_value)
+                    temp_obj.(cur_child_prop) = data_value;
+                  end
+               end
+               
+               objs{iArray} = temp_obj;
+            end
+            
+            
+            %NOTE: We'll pass out a cell array, later we'll
+            %need to go in and fix this ...
+            
+            
+%             
+%             
+%             
+%             
+%             
+            
+        end
     end
     
 end

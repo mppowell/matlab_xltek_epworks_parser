@@ -33,13 +33,21 @@ group_def_index_numbers = [group_defs.array_index];
 [~,I] = sortrows([group_test_numbers(:) group_def_index_numbers(:)]);
 obj.groups = obj.groups(I);
 
-%3) Timestamps
+%3) Waveforms
 %--------------------------------------------------------------------------
 tw = obj.triggered_waveforms;
 if ~isempty(tw)
    [~,I] = sort([tw.Timestamp]);
    obj.triggered_waveforms = tw(I); 
 end
+
+fr = obj.freerun_waveforms;
+if ~isempty(fr)
+   [~,I] = sort([fr.Timestamp]);
+   obj.freerun_waveforms = fr(I);
+end
+
+
 
 %4) Set organization
 %--------------------------------------------------------------------------
@@ -50,8 +58,18 @@ g = obj.groups;
 bs = [g.baseline_set];
 rs = [g.raw_sweep_set];
 
-[bs.is_baseline_set]  = epworks.sl.struct.dealScalar(true,length(bs));
-[rs.is_raw_sweep_set] = epworks.sl.struct.dealScalar(true,length(rs));
+%TODO: This should just be a method
+%assignScalarToStructArray()
+if ~isempty(bs)
+    [bs.is_baseline_set]  = epworks.sl.struct.dealScalar(true);
+end
+if ~isempty(rs)
+    [rs.is_raw_sweep_set] = epworks.sl.struct.dealScalar(true);
+end
+
+% true_rep = num2cell(repmat(true,1,length(rs)));
+% 
+% [rs.is_raw_sweep_set] = deal(true_rep{:});
 
 obj.baseline_sets  = bs;
 obj.raw_sweep_sets = rs;

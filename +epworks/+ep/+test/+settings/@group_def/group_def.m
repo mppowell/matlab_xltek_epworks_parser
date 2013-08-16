@@ -9,6 +9,19 @@ classdef group_def < epworks.id_object
     %   See Also:
     %   epworks.ep.group
     
+    properties (Hidden)
+       ID 
+       MaacsGroupId
+       TimelineID
+       TriggerSource
+    end
+    
+    properties
+       %See group object for details
+       SignalType
+       DisplayMode
+    end
+    
     properties
         CaptureChime
         CaptureEnable
@@ -16,32 +29,41 @@ classdef group_def < epworks.id_object
         CollectMaxData
         DesiredUpdateInterval
         DiscreteReadings
-        DisplayMode
         EMGCableMode
         FWaveFilter
         ForcedDecimation
-        ID
         IsEegGroup
         LimitedHBDecimation
         Location
-        MaacsGroupId
         Name
         NumDivisionsToCollect
         PreTriggerDCOffset
         PreTriggerTriggerDelay
         RollingWindow
         ShowLiveTriggered
-        SignalType
         SpecialType  %Not sure what this is
         StartOnTestActivation
         SweepsPerAvg
-        TimelineID
         TriggerDelay
-        TriggerSource
         d1 = '----  Pointers to Other Objects  ----'
         maacs_group
         timeline
         trigger_source
+        d3 = '----  Enumerated Values ----'
+    end
+    
+    properties (Dependent)
+        signal_type
+        display_mode
+    end
+    
+    methods
+            function value = get.signal_type(obj)
+            value = epworks.enumerations.getGroupSignalType(obj.SignalType);
+        end        
+        function value = get.display_mode(obj)
+           value = epworks.enumerations.getGroupDisplayMode(obj.DisplayMode);
+        end
     end
     
     properties

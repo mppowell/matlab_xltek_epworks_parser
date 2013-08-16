@@ -17,8 +17,8 @@ function populateIOMObjects(obj,parsed_iom_data)
 %   Full Path:
 %   epworks.main.populateIOMObjects
 
-
 r = parsed_iom_data.raw_objects;
+%r: epworks.raw_object_array
 
 n_objects = r.n_objs;
 
@@ -51,6 +51,11 @@ custom_init = dom.custom_init(dom.is_new_object);
 use_custom_init = false(1,n_objects);
 use_custom_init(import_object) = custom_init(loc(import_object));
 
+dom_custom_fh = dom.custom_fh(dom.is_new_object);
+custom_fh   = cell(1,n_objects);
+custom_fh(import_object) = dom_custom_fh(loc(import_object));
+
+
 %For each property, determine if we should import the property or not
 [import_property,loc] = ismember(fixed_full_names,dom.full_names);
 
@@ -70,6 +75,8 @@ is_array_object = false(1,r.n_objs);
 mask = strcmp(r.name,'000');
 is_array_object(r.parent_index(mask)) = true;
 
+use_custom_fh = ~cellfun('isempty',custom_fh);
+
 %NOTE: We'll do top level objects separately
 %Specifically, we need to get props from data ...
 for cur_depth = starting_depth:-1:1
@@ -84,6 +91,9 @@ for cur_depth = starting_depth:-1:1
         
         if isempty(children_indices)
             %Do nothing ...
+        elseif use_custom_fh(cur_index)
+            cur_custom_fh = custom_fh{cur_index};
+            temp = cur_custom_fh(r,children_indices);
         elseif is_array_object(cur_index) %strcmp(r(children_indices(1)).name,'000')
             %Array construction ...
             %

@@ -47,6 +47,7 @@ classdef group < epworks.ep
     
     properties
         Name
+        TriggerDisplay
         d0 = '----   Data Properties  ----'
         CaptureEnable %logical?, one can disable capture for a group by
         %editing the test
@@ -69,8 +70,9 @@ classdef group < epworks.ep
 
         SweepsPerAvg
         TriggerDelay %(Units: ms) delay from the onset of the trigger
-        %to the start of data capture. Note, I think that the trigger onset
-        %is different than the stimulus onset.
+        %to the start of data capture. Note, my understanding of the
+        %stimulus is that the trigger is a stimulus. The 'Stim Delay' is 
+        %the delay from the onset of the global sync
         d1 = '----  Pointers to Other Objects  ----'
         baseline_set
         group_def       %always present
@@ -90,18 +92,15 @@ classdef group < epworks.ep
     end
     
     methods
+        function value = get.TriggerDisplay(obj)
+           ts    = obj.trigger_source;
+           value = [ts.Nerve ' on ' ts.PhysName];
+        end
         function value = get.signal_type(obj)
-           VALUES   = {'Free Run' 'Triggered' '??? Unknown Type' 'Averaged'};
-           value = VALUES{obj.SignalType+1};
+            value = epworks.enumerations.getGroupSignalType(obj.SignalType);
         end        
         function value = get.display_mode(obj)
-           try
-              VALUES   = {'Vertical Curve Stack' '??? Unknown Type' 'Overlay' 'Replace'};
-              bits = bitget(obj.DisplayMode(1),1:8);
-              value = VALUES{find(bits,1)};
-           catch ME
-              value = 'ERROR: Unknown display mode value'; 
-           end
+           value = epworks.enumerations.getGroupDisplayMode(obj.DisplayMode);
         end
     end
     

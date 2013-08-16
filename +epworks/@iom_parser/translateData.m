@@ -1,6 +1,5 @@
 function translateData(obj)
-%
-%   
+% 
 %   epworks.iom_parser.translateData
 %
 %   The goal of this function is to take a set of raw bytes from the data
@@ -247,7 +246,7 @@ function helper__type0(r,C,T,F)
 %              TYPE 0 - We assume these are all 4 bytes
 %--------------------------------------------------------------------------
 mask = T.types == 0 & T.depths <= C.MAX_DEPTH;
-type_0_full_names = T.full_names(mask);
+type_0_full_names = T.fixed_full_names(mask);
 
 temp_data = vertcat(r.raw_data{mask});
 
