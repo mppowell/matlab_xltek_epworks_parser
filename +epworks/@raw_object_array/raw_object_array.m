@@ -36,7 +36,9 @@ classdef raw_object_array < handle
        data_start_I
        data_length
        data_value
-       raw_data
+       
+       raw_data %raw bytes associated with this name
+       
        children_indices
        n_objs %The size of all the arrays above
     end

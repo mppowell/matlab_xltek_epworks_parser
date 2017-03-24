@@ -315,8 +315,8 @@ classdef raw_object < handle
                 %
                 %    --------------------------------------------
                 %
-                %5 c c c c a a a a 2 d d d d [name] 0 e f f f f
-                %   u32              u32
+                %   5 c c c c a a a a 2 d d d d [name] 0 e f f f f
+                %     u32               u32
                 %
                 %  a - I don't know what this is, I've only
                 %      see [2 0 0 0] or [1 0 0 0]
@@ -344,7 +344,7 @@ classdef raw_object < handle
                 cur_data_index = cur_data_index + 4;
                 %cur_data_index now points to the first child 5
                 
-                child_start_index = cur_obj_index + 1;
+                child_obj_start_index = cur_obj_index + 1;
                 
                 %TODO: Do check on roa
                 if cur_obj_index + n_objects > length(roa.parent_index)
@@ -376,20 +376,17 @@ classdef raw_object < handle
                     
                     roa.raw_end_I(cur_obj_index) = roa.raw_start_I(cur_obj_index) + total_byte_length - 1;
                     
-                    %temp_obj.raw_end_I = temp_obj.raw_start_I + temp_obj.total_byte_length - 1;
-                    
-                    %Move past size
-                    
-                    
-                    roa.n_props(cur_obj_index) = raw_data_u32(cur_data_index);
-                    
-                    %temp_obj.n_props = raw_data_u32(cur_data_index);
+                    %n props handling
+                    %------------------------------------------------------
+                    % - this is either 1 or 2
+                    roa.n_props(cur_obj_index) = raw_data_u32(cur_data_index);                    
                     cur_data_index   = cur_data_index + 4;
                     
                     %Example of n_props = 1
                     %
                     %[5,18,0,0,0,1,0,0,0,2,9,0,0,0,65,103,101,0,5,32,0,0,0,2,0,0,0,2,14,0,0]
                     %            x <- this is unexpected       / \
+                    %                                           |
                     %      normally this is what I call a type  |
                     %
                     %   NOTE: On further inspection, it looks like
@@ -415,43 +412,35 @@ classdef raw_object < handle
                     cur_data_index = cur_data_index + 4;
                     
                     roa.name{cur_obj_index} = raw_char_data(cur_data_index:cur_data_index+name_length-1);
-                    
-                    %temp_obj.name = raw_char_data(cur_data_index:cur_data_index+name_length-1);
-                    
+                                        
                     switch roa.n_props(cur_obj_index)
+                        case 1
+                            %The prop is just the name, nothing else
+                            %temp_obj.has_data = false;
                         case 2
                             %skip null and go to type
                             cur_data_index = cur_data_index + name_length + 1;
                             
                             %(e)
-                            %------------------------------------------------------
-                            
+                            %----------------------------------------------
                             roa.type(cur_obj_index) = raw_data(cur_data_index);
-                            %temp_obj.type  = double(raw_data(cur_data_index)); %#ok<PROP>
                             cur_data_index = cur_data_index + 1;
                             
                             %(f)
                             %------------------------------------------------------
-                            roa.data_length(cur_obj_index) =  raw_data_u32(cur_data_index) - 5;
-                            %temp_obj.data_length  = raw_data_u32(cur_data_index) - 5;
-                            
+                            roa.data_length(cur_obj_index) =  raw_data_u32(cur_data_index) - 5;                            
                             roa.data_start_I(cur_obj_index) = cur_data_index + 4;
-                            %temp_obj.data_start_I = cur_data_index + 4;
-                        case 1
-                            %The prop is just the name, nothing else
-                            %temp_obj.has_data = false;
                         otherwise
                             error('unexpected unknown_32 value')
                     end
                     
-                    %all_data_objects{cur_obj_index} = temp_obj;
                     cur_data_index = roa.raw_end_I(cur_obj_index) + 1;
                 end
                 child_end_index = cur_obj_index;
                 
                 %cur_parent_obj.children         = [all_data_objects{child_start_index:child_end_index}];
                 if ~use_hack
-                    roa.children_indices{cur_parent_index} = child_start_index:child_end_index;
+                    roa.children_indices{cur_parent_index} = child_obj_start_index:child_end_index;
                     %cur_parent_obj.children_indices = child_start_index:child_end_index;
                 end
             end
