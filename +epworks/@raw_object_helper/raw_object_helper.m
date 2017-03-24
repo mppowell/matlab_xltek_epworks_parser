@@ -7,6 +7,9 @@ classdef raw_object_helper < epworks.RNEL.handle_light
     %   function calls being made in the raw_object class. I'm not thrilled
     %   with the organization of this class but it works for now.
     %
+    %   We only have one of these objects for parsing a single file
+    %
+    %
     %
     %   This is currently used by: 
     %   epworks.raw_object
@@ -16,6 +19,7 @@ classdef raw_object_helper < epworks.RNEL.handle_light
        raw_data_char
        raw_data_u32_as_double
        
+       %These values are update during the recursive parsing of objects ...
        d0 = '----  Read and write each loop  ----'
        raw_obj_array %epworks.raw_object_array
        all_data_objects       

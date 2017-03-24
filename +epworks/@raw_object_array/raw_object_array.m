@@ -2,24 +2,43 @@ classdef raw_object_array < handle
     %
     %   Class:
     %   epworks.raw_object_array
+    %
+    %   See Also
+    %   --------
+    %   epworks.raw_object
     
+    %These propertie are all arrays, which speeds up processing, rather
+    %than single elements with multiple objects.
+    
+    %TODO: Update these definitions from epworks.raw_object class
     properties
        VERSION = 1
-       parent_index
+       parent_index %index of the parent, -1 indicates no parent
+       
        depth
        total_byte_length
-       raw_start_I
+       raw_start_I %index (byte #) in the raw data file of where
+       %the object specification starts
        raw_end_I 
        name
-       full_name
-       type
+       
+       full_name %cellstr
+       %%'a.b.c.d.f' instead of just 'f'
+       
+       type %
+       % -1 : no data
+       %  0 : length 4, interpretation seems to vary
+       %  TODO: finish - see raw_object
+       %  1 :
+       %  2 : string
+       
        n_props
        data_start_I
        data_length
        data_value
        raw_data
        children_indices
-       n_objs
+       n_objs %The size of all the arrays above
     end
     
     methods

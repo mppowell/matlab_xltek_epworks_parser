@@ -46,9 +46,15 @@ classdef file_manager < epworks.RNEL.handle_light
                    error('User canceled') 
                 end
             else
-                if exist(study_name_or_path,'dir')
+                [base_path,iom_file_name,ext] = fileparts(study_name_or_path);
+                if strcmp(ext,'.iom')
+                    iom_file_name = [iom_file_name '.iom'];
+                    %all done
+                    
+                elseif exist(study_name_or_path,'dir')
                     base_path = study_name_or_path;
                     %We expect a single data (*.iom file)
+                    iom_file_name = '';
                     %---------------------------------------------------------------
                 else
                     %Input is thought to be a name, not a folder
@@ -57,8 +63,9 @@ classdef file_manager < epworks.RNEL.handle_light
                     %Get the base path from the user_options
                     user_options_obj = epworks.user_options.getInstance;
                     base_path        = fullfile(user_options_obj.study_parent_folder,study_name_local);
+                    iom_file_name = '';
                 end 
-                iom_file_name = '';
+                
             end
             
             %fileparts with a trailing file separator only strips the file

@@ -19,6 +19,7 @@ function translateData(obj)
 %   since in one case we have a number and in another a string ...
 
 r = obj.raw_objects;
+%Class: epworks.raw_object_array
 
 %                    d0: '----- Helper Info -----'
 %                 index: 1

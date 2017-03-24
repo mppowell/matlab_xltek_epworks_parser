@@ -69,26 +69,30 @@ classdef raw_object < handle
             %IOM FORMAT
             %------------------------------------------
             %
-            %    Lead In:
-            %    ----------------------
+            %    First bytes in the file ...
+            %    --------------------------------------------------
             %    a a a a a a a a a a a a a a a a b b b b c c c ....
             %
             %    a - 16 byte lead in ID, this is repeated
             %        for every top level object
-            %    b - u32, seems to always be 1
+            %    b - u32, seems to always be 1 (bytes 17 - 20)
             %    c - same as a, but this is the first top level
             %        object
-            %
+            %        bytes (21 - 36)
+            %        The first top level object starts parsing at byte 21.
+            %        See 'top level object' definition below.
+            %        
             %    For each top level object
-            %    --------------------------------------
+            %    -------------------------
             %
             %    c c c c c c c c c c c c c c c c d d d d 5 d d d d e e e e
             %
             %    c - 16 byte lead in
             %        I = 1:16
-            %    d - u32, length (but this is after the 5)
+            %    d - u32, byte length (starting at 5)
             %        I = 17:20
-            %        5 -> I = 21
+            %    5 - I = 21
+            %    d - u32
             %        I = 22:25 <- 2nd instance of d
             
             %    e - # of objects
@@ -104,6 +108,8 @@ classdef raw_object < handle
 %             all_data_objects = cell(1,MAX_NUMBER_OBJECTS);
             cur_obj_index    = 0;
             
+            %Initialization of the output
+            %------------------------------------
             roa = epworks.raw_object_array;
             
             %Processing of the top-level objects
@@ -147,9 +153,7 @@ classdef raw_object < handle
                 
                 %cur_data_index = cur_data_index + temp_obj.total_byte_length;
                 %NOTE: At this point we point to another (c)
-                
-                
-                
+  
                 %temp_obj.raw_end_I   = cur_data_index - 1;
                 
                 %all_data_objects{cur_obj_index} = temp_obj;
@@ -204,6 +208,16 @@ classdef raw_object < handle
             %
             %   epworks.raw_object.recursiveGetAllObjects(roh,cur_obj_index,new_parent_indices)
             %
+            %   Inputs
+            %   ------
+            %   roh : epworks.raw_object_helper
+            %       This class holds the raw data, as well as a pointer
+            %       to n instance of epworks.raw_object_array
+            %   new_parent_indices : 
+            %       Indices of the parents in the raw_object_array class
+            %       whose children we need to parse.
+            
+            %TODO: rename, this isn't really recursive
             
             done = false;
             while ~done
@@ -215,15 +229,13 @@ classdef raw_object < handle
                 
                 cur_obj_index    = roh.cur_obj_index;
                 roa = roh.raw_obj_array;
-                %all_data_objects = roh.all_data_objects;
-                
                 
                 %Analysis of new objects to see if we need to go deeper
                 just_added_object_indices = starting_obj_index:cur_obj_index;
-                
-%                 temp  = [all_data_objects{just_added_object_indices}];
-%                 types = [temp.type];
-                
+                                
+                %We only need to parse children for objects have a type of
+                %5, all other objects hold terminal values such as a string
+                %or number
                 new_parent_indices = just_added_object_indices(roa.type(just_added_object_indices) == 5);
                 
                 done = isempty(new_parent_indices);
@@ -236,7 +248,7 @@ classdef raw_object < handle
             %
             %   epworks.iom_raw_object.createRawObjects(roh,parent_indices)
             %
-            %   HACK:
+            %   HACK MODE: for tst files
             %   epworks.iom_raw_object.createRawObjects(roh,-1*start_index)
             %
             %   This creates all children of objects at a specified depth
@@ -261,15 +273,16 @@ classdef raw_object < handle
             
             use_hack  = length(parent_indices) == 1 & parent_indices < 1;
             
-            raw_data      = roh.raw_data_u8; %#ok<PROP>
+            raw_data      = roh.raw_data_u8; 
             raw_char_data = roh.raw_data_char;
             raw_data_u32  = roh.raw_data_u32_as_double;
-            depth         = roh.getNextDepth; %#ok<PROP>
+            depth         = roh.getNextDepth; 
             %all_data_objects = roh.all_data_objects;
             cur_obj_index = roh.cur_obj_index;
             roa = roh.raw_obj_array;
             
             %NOTE: Below the parent is used in 3 ways:
+            %-------------------------------------------------
             %1) To know where to start parsing in the file
             %2) To assign a parent index
             %3) We assign the children to the parent
@@ -307,7 +320,7 @@ classdef raw_object < handle
                 %
                 %  a - I don't know what this is, I've only
                 %      see [2 0 0 0] or [1 0 0 0]
-                %  c - length of child object
+                %  c - byte length of child object
                 %  d - how far to advance to get to e
                 %  e - type
                 %  f - pointer to next object, data length is 1 less
@@ -344,15 +357,7 @@ classdef raw_object < handle
 
                 for iObject = 1:n_objects
                     cur_obj_index = cur_obj_index + 1;
-                    
-                    %temp_obj      = initialized_local_objects(local_obj_count);
-                    
-                    
-%                     temp_obj.index        = cur_obj_index;
-                    %temp_obj.parent_index = cur_parent_index;
-                    %temp_obj.depth        = depth; %#ok<PROP>
-                    %temp_obj.raw_start_I  = cur_data_index;
-                    
+                                        
                     roa.raw_start_I(cur_obj_index) = cur_data_index;
                     
                     %Move past 5 - 5 indicates an object type ...
@@ -399,7 +404,7 @@ classdef raw_object < handle
                     %   instead of most others that have 2 things
                     %   a character array and some data.
                     
-                    if raw_data(cur_data_index) ~= 2 %#ok<PROP>
+                    if raw_data(cur_data_index) ~= 2 
                         error('parse error, I expect a 2 at this location to identify a string') 
                     end
                     cur_data_index = cur_data_index + 1;

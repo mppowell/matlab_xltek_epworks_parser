@@ -77,7 +77,9 @@ classdef main < epworks.RNEL.handle_light
             
             %history dat file
             %---------------------------------------------------------------
-            obj.dat_file = epworks.history.dat_file(file_manager.history_dat_path);
+            if exist(file_manager.history_dat_path,'file')
+                obj.dat_file = epworks.history.dat_file(file_manager.history_dat_path);
+            end
             
             %notes files
             %---------------------------------------------------------------
