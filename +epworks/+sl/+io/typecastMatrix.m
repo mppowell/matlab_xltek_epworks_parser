@@ -22,6 +22,12 @@ n_cols = size(data,2);
 %TODO: Add try catch with details on error (thrown by reshape)
 %This occurs when reshape size is wrong
 
+% Need to cast the data from double to uint8 first for typecast to work
+% properly
+% Added by mp
+data = uint8(data);
+% End added by mp
+
 if keep_columns
    temp_output = typecast(data(:),format);
    output      = reshape(temp_output,n_cols,length(temp_output)/n_cols)'; 

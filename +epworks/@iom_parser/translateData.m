@@ -379,10 +379,13 @@ conv_data_cell(mask_len) = F.rows(F.typeMat(temp_data,'uint64',false));
 %--------------------------------------------------------------------------
 mask_len  = len_3_data == 8;
 temp_data = vertcat(all_type_3_data{mask_len});
-uint64_data = F.typeMat(temp_data,'uint64',false);
+% There aren't always data with length 8
+if any(mask_len)
+    uint64_data = F.typeMat(temp_data,'uint64',false);
 
-%arrayfun(@datestr,conv_data(needs_fixin),'un',0);
-conv_data_cell(mask_len) = F.rows(F.time2(uint64_data));
+    %arrayfun(@datestr,conv_data(needs_fixin),'un',0);
+    conv_data_cell(mask_len) = F.rows(F.time2(uint64_data));
+end
 
 %I've only seen 1 value with length 2
 %EPTest.Data.Settings.ConfigData.{57CF9D5C-AC2F-11D3-A8CC-00105AA89390}ShowSplitGains'
@@ -411,11 +414,16 @@ mask2 = ismember(type_3_full_names,'EPTriggeredWaveform.Data.SourceData');
 source_data_length = len_3_data(mask2);
 
 if ~isempty(source_data_length)
-    if ~all(source_data_length == source_data_length(1))
-       error('Unhandled cases of varying stimulus data length, code needs to be updated') 
-    end
+    % Shorter waveforms may be when an aquisition was terminated part way
+    % through to switch amplitudes
+    % Added by mp
+    mask2_ind = find(mask2);
+    mask2_ignore = mask2_ind(source_data_length ~= source_data_length(1));
+    mask2(mask2_ignore) = false;
+    % End added by mp
 
     raw_source_data = vertcat(all_type_3_data{mask2});
+    
     s_cell = num2cell(helper__getSourceData(raw_source_data,C,T,F));
 
     conv_data_cell(mask2) = s_cell;
@@ -477,45 +485,45 @@ s = struct('unknown_16',repmat({{}},1,n_rows));
 
 b  = raw_source_data(:,5:6); 
 bc = num2cell(F.typeMat(b,'uint16',false)); %bc - b cell
-[s.unknown_u16] = deal(bc{:});
+[s.unknown_u16] = bc{:};
 
 %c
 cc = F.rows(raw_source_data(:,7:9));
-[s.unknown_null] = deal(cc{:});
+[s.unknown_null] = cc{:};
 
 %d
 d  = raw_source_data(:,10:17);
 dc = num2cell(F.typeMat(d,'uint64',false));
-[s.unknown_u64]  = deal(dc{:});
+[s.unknown_u64]  = dc{:};
 
 
 %e
 ec = num2cell(raw_source_data(:,18));
-[s.unknown_null2] = deal(ec{:});
+[s.unknown_null2] = ec{:};
 
 %f
 f = raw_source_data(:,19:20);
 data_sizes = F.typeMat(f,'uint16',false);
-if ~all(data_sizes == data_sizes(1))
-   error('Code is not programmed to handle differing data sizes')
-end
+% if ~all(data_sizes == data_sizes(1))
+%    error('Code is not programmed to handle differing data sizes')
+% end
 
 %g
 g = raw_source_data(:,21:28);
 gc = num2cell(F.time2(F.typeMat(g,'uint64',false)));
-[s.timestamp] = deal(gc{:});
+[s.timestamp] = gc{:};
 
 
 %h
 h  = raw_source_data(:,29:29+data_sizes(1)*4-1);
 h2 = F.typeMat(h,'single',false);
 hc = F.rows(h2);
-[s.data] = deal(hc{:});
+[s.data] = hc{:};
 
 start_index_i = 29+4*data_sizes(1);
 
 i = raw_source_data(:,start_index_i:end);
 ic = F.rows(i);
-[s.unknown_end_bytes] = deal(ic{:});
+[s.unknown_end_bytes] = ic{:};
 
 end

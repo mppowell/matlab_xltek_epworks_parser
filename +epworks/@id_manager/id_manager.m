@@ -75,7 +75,9 @@ classdef id_manager < handle
             %- second, from test objects
             test_objs = main_obj.tests;
             
-            objs_by_type = [objs_by_type; test_objs.getSubIDObjects];
+            if ~isempty(test_objs)
+                objs_by_type = [objs_by_type; test_objs.getSubIDObjects];
+            end
             
             %- third, from the rec files
             rec_files     = main_obj.rec_files;

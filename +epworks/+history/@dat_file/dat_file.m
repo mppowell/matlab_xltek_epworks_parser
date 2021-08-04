@@ -100,71 +100,72 @@ classdef dat_file < epworks.RNEL.handle_light
             %
             %   - u64 x2, u64
             
-            
-            s_all(obj.n_entries) = epworks.history.dat_entries;
-            
-            %u32_data = typecast(data(81:end),'uint32');
-            
-            cur_index = 81;
-            for iSeg = 1:obj.n_entries
-                s = s_all(iSeg);
-                
-                s.TraceID = typecast(data(cur_index:cur_index+15),'uint64');
-                cur_index = cur_index + 16;
-                
-                n1 = typecast(data(cur_index:cur_index+3),'uint32');
-                cur_index = cur_index + 4;
-                
-                s.n = n1;
-                
-                %NOTE: Apparently sometimes this can be zero
-                
-                if n1 == 0
-                    %When this happens, it seems the next 4 bytes are
-                    %always 0
-                    if ~all(data(cur_index:cur_index:3) == 0)
-                        error('Null padding assumption violated, change code')
-                    end
+            if obj.n_entries > 0
+                s_all(obj.n_entries) = epworks.history.dat_entries;
+
+                %u32_data = typecast(data(81:end),'uint32');
+
+                cur_index = 81;
+                for iSeg = 1:obj.n_entries
+                    s = s_all(iSeg);
+
+                    s.TraceID = typecast(data(cur_index:cur_index+15),'uint64');
+                    cur_index = cur_index + 16;
+
+                    n1 = typecast(data(cur_index:cur_index+3),'uint32');
                     cur_index = cur_index + 4;
-                    continue
+
+                    s.n = n1;
+
+                    %NOTE: Apparently sometimes this can be zero
+
+                    if n1 == 0
+                        %When this happens, it seems the next 4 bytes are
+                        %always 0
+                        if ~all(data(cur_index:cur_index:3) == 0)
+                            error('Null padding assumption violated, change code')
+                        end
+                        cur_index = cur_index + 4;
+                        continue
+                    end
+
+
+                    %Part 3
+                    %---------------------------------
+                    n_bytes   = n1*20;
+                    temp      = reshape(data(cur_index:cur_index + n_bytes - 1),20,n1)';
+                    cur_index = cur_index + n_bytes;
+
+                    ids1  = temp(:,1:16); %We'll translate later
+                    s.u32 = F.typeMatrix(temp(:,17:end),'uint32',false);
+
+                    %Part 4
+                    %---------------------------------
+                    n2 = typecast(data(cur_index:cur_index+3),'uint32');
+                    cur_index = cur_index + 4;
+
+                    if n1 ~= n2
+                        error('Same size assumption violated')
+                    end
+
+                    %Part 5
+                    %---------------------------------
+                    n_bytes = n1*24;
+                    temp = reshape(data(cur_index:cur_index + n_bytes - 1),24,n1)';
+                    ids2 = temp(:,1:16);
+                    cur_index = cur_index + n_bytes;
+
+                    if ~isequal(ids1,ids2)
+                        error('Same IDs assumption violated')
+                    end
+
+                    %Since equal, we can use ids1 or ids2
+                    s.IDs = F.typeMatrix(ids1,'uint64',false);
+
+                    s.timestamps = F.toTime(F.typeMatrix(temp(:,17:end),'uint64',false));
                 end
-                
-                
-                %Part 3
-                %---------------------------------
-                n_bytes   = n1*20;
-                temp      = reshape(data(cur_index:cur_index + n_bytes - 1),20,n1)';
-                cur_index = cur_index + n_bytes;
-                
-                ids1  = temp(:,1:16); %We'll translate later
-                s.u32 = F.typeMatrix(temp(:,17:end),'uint32',false);
-                
-                %Part 4
-                %---------------------------------
-                n2 = typecast(data(cur_index:cur_index+3),'uint32');
-                cur_index = cur_index + 4;
-                
-                if n1 ~= n2
-                    error('Same size assumption violated')
-                end
-                
-                %Part 5
-                %---------------------------------
-                n_bytes = n1*24;
-                temp = reshape(data(cur_index:cur_index + n_bytes - 1),24,n1)';
-                ids2 = temp(:,1:16);
-                cur_index = cur_index + n_bytes;
-                
-                if ~isequal(ids1,ids2)
-                    error('Same IDs assumption violated')
-                end
-                
-                %Since equal, we can use ids1 or ids2
-                s.IDs = F.typeMatrix(ids1,'uint64',false);
-                
-                s.timestamps = F.toTime(F.typeMatrix(temp(:,17:end),'uint64',false));
+                obj.entries = s_all;
             end
-            obj.entries = s_all;
             
         end
     end

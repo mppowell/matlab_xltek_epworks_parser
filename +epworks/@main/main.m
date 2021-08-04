@@ -58,8 +58,10 @@ classdef main < epworks.RNEL.handle_light
             obj.populateIOMObjects(parsed_iom_data);
             
             %Hack, fixes stim objects in settings ...
-            settings_objects = [obj.tests.Settings];
-            settings_objects.fixStimsObjects();
+            if ~isempty(obj.tests)
+                settings_objects = [obj.tests.Settings];
+                settings_objects.fixStimsObjects();
+            end
             
             %rec files
             %---------------------------------------------------------------
